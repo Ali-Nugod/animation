@@ -112,7 +112,7 @@ const messagesContainer = document.getElementById("messages");
 function showTyping(sender) {
   const typing = document.createElement("div");
   typing.classList.add("typing");
-  typing.textContent = (sender === "user1" ? "أحمد" : "ليلى") + " يكتب...";
+  typing.textContent = (sender === "user1" ? "أحمد" : "محمد") + " يكتب...";
   typing.id = "typing";
   messagesContainer.appendChild(typing);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
