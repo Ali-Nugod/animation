@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دردشة واتساب تجريبية</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #ece5dd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .chat-container {
+    width: 360px;
+    height: 600px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .header {
+    background-color: #075e54;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: black;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .message {
+    max-width: 70%;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 10px;
+    line-height: 1.4;
+    white-space: pre-line;
+    display: block;
+  }
+
+  .sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+  }
+
+  .received {
+    background-color: #fff;
+    align-self: flex-start;
+  }
+
+  .typing {
+    font-style: italic;
+    color: gray;
+    margin: 8px;
+  }
+
+  .footer {
+    background-color: #f0f0f0;
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+  }
+
+  .messages::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .messages::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="header"> whatsapp</div>
+  <div class="messages" id="messages">
+    <!-- الرسائل تظهر هنا -->
+  </div>
+  <div class="footer"></div>
+</div>
+
+<script>
+const chat = [
+  { sender: "user1", text: "مرحباً، كيف حالك اليوم؟" },
+  { sender: "user2", text: "أهلاً! أنا بخير، ماذا عنك؟" },
+  { sender: "user1", text: "أنا أيضاً بخير الحمد لله " },
+  { sender: "user2", text: "هل شاهدت الدرس الجديد في البرمجة؟" },
+  { sender: "user1", text: "نعم! كان مفيداً جداً " },
+  { sender: "user2", text: "جميل! سأكمله الليلة إن شاء الله." }
+];
+
+let index = 0;
+const messagesContainer = document.getElementById("messages");
+
+function showTyping(sender) {
+  const typing = document.createElement("div");
+  typing.classList.add("typing");
+  typing.textContent = (sender === "user1" ? "أحمد" : "ليلى") + " يكتب...";
+  typing.id = "typing";
+  messagesContainer.appendChild(typing);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function removeTyping() {
+  const typing = document.getElementById("typing");
+  if (typing) typing.remove();
+}
+
+function typeMessage(msg, callback) {
+  const message = document.createElement("div");
+  message.classList.add("message");
+  message.classList.add(msg.sender === "user1" ? "sent" : "received");
+  messagesContainer.appendChild(message);
+
+  let i = 0;
+  const interval = setInterval(() => {
+    message.textContent += msg.text.charAt(i);
+    i++;
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    if (i >= msg.text.length) {
+      clearInterval(interval);
+      if (callback) callback();
+    }
+  }, 50); // سرعة الكتابة (يمكنك تعديلها)
+}
+
+function nextMessage() {
+  if (index >= chat.length) return;
+  const msg = chat[index];
+  showTyping(msg.sender);
+  setTimeout(() => {
+    removeTyping();
+    typeMessage(msg, () => {
+      index++;
+      setTimeout(nextMessage, 1000);
+    });
+  }, 1000);
+}
+
+nextMessage();
+</script>
+
+</body>
+</html>
